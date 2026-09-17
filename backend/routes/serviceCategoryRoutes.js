@@ -1,0 +1,10 @@
+const express = require('express');
+const controller = require('../controllers/serviceCategoryController');
+const auth = require('../middleware/authMiddleware');
+const admin = require('../middleware/adminMiddleware');
+const router = express.Router();
+router.get('/service-categories', controller.list);
+router.get('/admin/service-categories', auth, admin, controller.listAdmin);
+router.post('/admin/service-categories', auth, admin, controller.save);
+router.patch('/admin/service-categories/:id', auth, admin, controller.save);
+module.exports = router;

@@ -1,0 +1,13 @@
+const express = require('express');
+const controller = require('../controllers/serviceController');
+const auth = require('../middleware/authMiddleware');
+const admin = require('../middleware/adminMiddleware');
+const upload = require('../middleware/uploadMiddleware');
+const router = express.Router();
+router.get('/services', controller.list);
+router.get('/services/:id', controller.detail);
+router.get('/admin/services', auth, admin, controller.listAdmin);
+router.get('/admin/services/:id', auth, admin, controller.detailAdmin);
+router.post('/admin/services', auth, admin, upload, controller.save);
+router.patch('/admin/services/:id', auth, admin, upload, controller.save);
+module.exports = router;

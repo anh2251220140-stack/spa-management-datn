@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@layer base {
+  body { @apply m-0 bg-stone-50 text-stone-800 antialiased; font-family: 'Segoe UI', sans-serif; }
+  button, a, input { @apply focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700; }
+  button { @apply cursor-pointer disabled:cursor-wait disabled:opacity-60; }
+}
+@layer components {
+  .primary-button { @apply inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-800 px-5 py-3 font-semibold text-white transition hover:bg-emerald-900 disabled:opacity-60; }
+  .form-input { @apply mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-base outline-none focus:border-emerald-700; }
+}
