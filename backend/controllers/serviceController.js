@@ -2,7 +2,7 @@ const pool = require('../config/db');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { randomUUID } = require('node:crypto');
-const uploadDirectory = path.join(__dirname, '..', 'uploads', 'services');
+const uploadDirectory = process.env.SERVICE_UPLOAD_DIR || path.join(__dirname, '..', 'uploads', 'services');
 const select = 'SELECT s.*, c.name AS category_name, c.status AS category_status FROM services s JOIN service_categories c ON c.id = s.category_id';
 
 async function listServices(req, res, next, isAdmin) {

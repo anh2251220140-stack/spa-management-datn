@@ -23,7 +23,7 @@ app.get('/api/health', async (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api', serviceCategoryRoutes);
 app.use('/api', serviceRoutes);
-app.use('/uploads/services', express.static(path.join(__dirname, 'uploads', 'services'), {
+app.use('/uploads/services', express.static(process.env.SERVICE_UPLOAD_DIR || path.join(__dirname, 'uploads', 'services'), {
   setHeaders(res) { res.setHeader('X-Content-Type-Options', 'nosniff'); },
 }));
 

@@ -31,7 +31,7 @@ beforeAll(async () => {
     const [[database]] = await connection.query('SELECT DATABASE() AS name');
     if (database.name !== 'spa_management_test') throw new Error('Unsafe test database');
     const schema = fs.readFileSync(path.join(__dirname, '..', '..', 'database', 'schema.sql'), 'utf8');
-    for (const table of ['users', 'customers']) {
+    for (const table of ['users', 'customers', 'service_categories', 'services']) {
       const [existing] = await connection.execute(
         'SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?',
         ['spa_management_test', table]
