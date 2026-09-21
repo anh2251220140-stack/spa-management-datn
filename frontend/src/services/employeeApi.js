@@ -1,0 +1,11 @@
+import api from './api'
+export const getEmployees = () => api.get('/admin/employees')
+export const getEmployee = id => api.get(`/admin/employees/${id}`)
+export const createEmployee = data => api.post('/admin/employees', data)
+export const updateEmployee = (id, data) => api.patch(`/admin/employees/${id}`, data)
+export const getAssignments = employeeId => api.get('/admin/employee-services', { params: { employee_id: employeeId } })
+export const createAssignment = data => api.post('/admin/employee-services', data)
+export const updateAssignment = (employeeId, serviceId, status) => api.patch(`/admin/employee-services/${employeeId}/${serviceId}`, { status })
+export const getSchedules = employeeId => api.get('/admin/employee-schedules', { params: { employee_id: employeeId } })
+export const createSchedule = data => api.post('/admin/employee-schedules', data)
+export const updateSchedule = (id, data) => api.patch(`/admin/employee-schedules/${id}`, data)

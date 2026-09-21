@@ -1,4 +1,6 @@
 import ServiceListPage from '../pages/public/ServiceListPage'
+import EmployeeManagementPage from '../pages/admin/EmployeeManagementPage'
+import EmployeeDetailPage from '../pages/admin/EmployeeDetailPage'
 import ServiceDetailPage from '../pages/public/ServiceDetailPage'
 import CategoryManagementPage from '../pages/admin/CategoryManagementPage'
 import ServiceManagementPage from '../pages/admin/ServiceManagementPage'
@@ -19,6 +21,7 @@ export default function AppRoutes() {
     <Route path="register" element={<RegisterPage />} />
     <Route element={<ProtectedRoute role="user" />}><Route path="user" element={<UserDashboard />} /></Route>
     <Route element={<ProtectedRoute role="admin" />}><Route path="admin" element={<AdminDashboard />} /><Route path="admin/categories" element={<CategoryManagementPage />} /><Route path="admin/services" element={<ServiceManagementPage />} /></Route>
+    <Route element={<ProtectedRoute role="admin" />}><Route path="admin/employees" element={<EmployeeManagementPage />} /><Route path="admin/employees/:id" element={<EmployeeDetailPage />} /></Route>
     <Route path="*" element={<Navigate to="/" replace />} />
   </Route></Routes>
 }
