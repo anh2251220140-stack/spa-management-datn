@@ -45,5 +45,5 @@ export function AuthProvider({ children }) {
     return () => window.removeEventListener('storage', sync)
   }, [])
   function retry() { setSessionError(''); setLoading(true); setAttempt((value) => value + 1) }
-  return <AuthContext.Provider value={{ user, customer, token, loading, sessionError, login, logout, retry }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, customer, token, loading, sessionError, login, logout, retry, refreshCustomer: setCustomer }}>{children}</AuthContext.Provider>
 }

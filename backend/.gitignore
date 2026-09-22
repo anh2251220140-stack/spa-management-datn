@@ -5,3 +5,5 @@ npm-debug.log*
 
 uploads/services/*
 !uploads/services/.gitkeep
+uploads/avatars/*
+!uploads/avatars/.gitkeep

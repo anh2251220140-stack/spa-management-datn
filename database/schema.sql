@@ -26,6 +26,7 @@ CREATE TABLE customers (
     user_id INT UNSIGNED NULL,
     full_name VARCHAR(100) NOT NULL,
     phone VARCHAR(20) NOT NULL,
+    avatar_url VARCHAR(255) NULL,
     gender ENUM('male', 'female', 'other') NULL,
     date_of_birth DATE NULL,
     address VARCHAR(255) NULL,

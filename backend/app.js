@@ -21,6 +21,11 @@ app.get('/api/health', async (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/profile', require('./routes/profileRoutes'));
+app.use('/uploads/avatars', express.static(process.env.AVATAR_UPLOAD_DIR || path.join(__dirname, 'uploads', 'avatars'), {
+  setHeaders(res) { res.setHeader('X-Content-Type-Options', 'nosniff'); },
+}));
+app.use('/api', require('./routes/appointmentRoutes'));
 app.use('/api/admin', require('./routes/employeeRoutes'));
 app.use('/api', serviceCategoryRoutes);
 app.use('/api', serviceRoutes);

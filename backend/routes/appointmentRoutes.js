@@ -1,0 +1,15 @@
+const router = require('express').Router();
+const auth = require('../middleware/authMiddleware');
+const admin = require('../middleware/adminMiddleware');
+const controller = require('../controllers/appointmentController');
+const user = (req, res, next) => req.user.role === 'user' ? next() : res.status(403).json({ message: 'Chức năng dành cho khách hàng.' });
+router.get('/booking/employees', auth, user, controller.employees);
+router.get('/booking/slots', auth, user, controller.slots);
+router.get('/appointments', auth, user, controller.list);
+router.get('/appointments/:id', auth, user, controller.detail);
+router.post('/appointments', auth, user, controller.create);
+router.patch('/appointments/:id/cancel', auth, user, controller.updateStatus);
+router.get('/admin/appointments', auth, admin, controller.list);
+router.get('/admin/appointments/:id', auth, admin, controller.detail);
+router.patch('/admin/appointments/:id/status', auth, admin, controller.updateStatus);
+module.exports = router;
