@@ -1,0 +1,11 @@
+const router = require('express').Router();
+const controller = require('../controllers/promotionController');
+const auth = require('../middleware/authMiddleware');
+const admin = require('../middleware/adminMiddleware');
+router.get('/promotions/active', controller.active);
+router.get('/admin/promotions', auth, admin, controller.list);
+router.get('/admin/promotions/:id', auth, admin, controller.detail);
+router.post('/admin/promotions', auth, admin, controller.save);
+router.patch('/admin/promotions/:id', auth, admin, controller.save);
+router.patch('/admin/promotions/:id/status', auth, admin, controller.status);
+module.exports = router;
