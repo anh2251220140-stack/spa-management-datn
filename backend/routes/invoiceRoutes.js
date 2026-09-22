@@ -1,0 +1,12 @@
+const router = require('express').Router();
+const auth = require('../middleware/authMiddleware');
+const admin = require('../middleware/adminMiddleware');
+const controller = require('../controllers/invoiceController');
+router.get('/admin/invoices/eligible-appointments', auth, admin, controller.eligible);
+router.get('/admin/invoices', auth, admin, controller.list);
+router.get('/admin/invoices/:id', auth, admin, controller.detail);
+router.post('/admin/invoices', auth, admin, controller.create);
+const customer = (req, res, next) => req.user.role === 'user' ? next() : res.status(403).json({ message: 'Trang hóa đơn cá nhân dành cho khách hàng.' });
+router.get('/invoices', auth, customer, controller.list);
+router.get('/invoices/:id', auth, customer, controller.detail);
+module.exports = router;

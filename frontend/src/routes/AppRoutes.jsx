@@ -1,4 +1,5 @@
 import ServiceListPage from '../pages/public/ServiceListPage'
+import InvoicePage from '../components/InvoicePage'
 import PromotionManagementPage from '../pages/admin/PromotionManagementPage'
 import PromotionListPage from '../pages/public/PromotionListPage'
 import UserAccountPage from '../pages/user/UserAccountPage'
@@ -22,6 +23,8 @@ import HomePage from '../pages/public/HomePage'
 export default function AppRoutes() {
   return <Routes><Route element={<MainLayout />}>
     <Route index element={<HomePage />} />
+    <Route element={<ProtectedRoute role="admin" />}><Route path="admin/invoices" element={<InvoicePage admin />} /><Route path="admin/invoices/:id" element={<InvoicePage admin />} /></Route>
+    <Route element={<ProtectedRoute role="user" />}><Route path="invoices" element={<InvoicePage />} /><Route path="invoices/:id" element={<InvoicePage />} /></Route>
     <Route path="promotions" element={<PromotionListPage />} />
     <Route element={<ProtectedRoute role="admin" />}><Route path="admin/promotions" element={<PromotionManagementPage />} /></Route>
     <Route element={<ProtectedRoute role="user" />}><Route path="account" element={<UserAccountPage />} /></Route>
