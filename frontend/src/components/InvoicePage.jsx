@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import PaymentPanel from './PaymentPanel'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getInvoices, getInvoice, getInvoiceAppointments, createInvoice } from '../services/invoiceApi'
 import { getActivePromotions } from '../services/promotionApi'
@@ -11,6 +12,8 @@ export default function InvoicePage({ admin = false }) {
   const { id } = useParams(), navigate = useNavigate()
   const base = admin ? '/admin/invoices' : '/invoices'
   const [rows, setRows] = useState([]), [detail, setDetail] = useState(null)
+  const [paidNotice, setPaidNotice] = useState(false)
+  const paymentConfirmed = useCallback(updated => { setDetail(updated); setPaidNotice(true) }, [])
   const [appointments, setAppointments] = useState([]), [promotions, setPromotions] = useState([])
   const [appointmentId, setAppointmentId] = useState(''), [promotionId, setPromotionId] = useState(''), [note, setNote] = useState('')
   const [paymentStatus, setPaymentStatus] = useState(''), [date, setDate] = useState('')
@@ -18,7 +21,7 @@ export default function InvoicePage({ admin = false }) {
   useEffect(() => {
     let active = true
     async function load() {
-      setLoading(true); setError(''); setDetail(null)
+      setLoading(true); setError(''); setDetail(null); setPaidNotice(false)
       try {
         if (id) {
           const response = await getInvoice(admin, id)
@@ -44,7 +47,7 @@ export default function InvoicePage({ admin = false }) {
   }
   async function save(event) {
     event.preventDefault(); setError('')
-    if (!appointmentId) return setError('Vui lòng chọn lịch hẹn đã hoàn thành.')
+    if (!appointmentId) return setError('Vui lòng chọn lịch hẹn đã xác nhận hoặc hoàn thành.')
     setBusy(true)
     try {
       const response = await createInvoice({ appointment_id: Number(appointmentId), promotion_id: promotionId ? Number(promotionId) : null, note })
@@ -57,6 +60,7 @@ export default function InvoicePage({ admin = false }) {
     <h1 className="text-3xl font-semibold">{admin ? 'Quản lý hóa đơn' : 'Hóa đơn của tôi'}</h1>
     <p className="text-sm text-stone-500">Ngày giờ theo giờ Việt Nam.</p>
     {error && <p role="alert" className="text-red-700">{error}</p>}
+    {paidNotice && <div role="status" className="rounded-xl border border-emerald-300 bg-emerald-50 p-5 text-emerald-900"><h2 className="text-xl font-semibold">Thanh toán thành công</h2><p>Hóa đơn đã được thanh toán thành công.</p></div>}
     {id && <Link className="text-emerald-800 underline" to={base}>← Danh sách hóa đơn</Link>}
     {loading ? <p role="status">Đang tải hóa đơn…</p> : id ? detail && <section className="space-y-4 rounded-2xl border border-emerald-200 bg-white p-6">
       <h2 className="break-all text-xl font-semibold">{detail.invoice_code}</h2>
@@ -70,12 +74,13 @@ export default function InvoicePage({ admin = false }) {
       <p>Giảm giá: {formatPrice(detail.discount_amount)}</p>
       <p className="text-xl font-semibold text-emerald-800">Tổng tiền: {formatPrice(detail.total_amount)}</p>
       <p>Trạng thái: {paymentLabel(detail.payment_status)}</p>
+      {!admin && detail.payment_status === 'unpaid' && <PaymentPanel key={detail.id} invoice={detail} onPaid={paymentConfirmed} />}
       {detail.note && <p className="whitespace-pre-wrap">Ghi chú: {detail.note}</p>}
     </section> : <>
       {admin && <form className="space-y-4 rounded-2xl border border-stone-200 bg-white p-6" onSubmit={save}><h2 className="text-xl font-semibold">Tạo hóa đơn</h2>
         <fieldset disabled={busy} className="space-y-4">
-          <label className="block">Lịch hẹn đã hoàn thành<select required className="form-input" value={appointmentId} onChange={event => { setAppointmentId(event.target.value); setPromotionId('') }}><option value="">Chọn lịch hẹn chưa có hóa đơn</option>{appointments.map(row => <option key={row.id} value={row.id}>#{row.id} • {row.customer_name} • {row.service_name_snapshot} • {formatPrice(row.booked_price)}</option>)}</select></label>
-          {!appointments.length && <p className="text-sm text-stone-500">Không có lịch hẹn hoàn thành nào đang chờ lập hóa đơn.</p>}
+          <label className="block">Lịch hẹn đủ điều kiện tạo hóa đơn<select required className="form-input" value={appointmentId} onChange={event => { setAppointmentId(event.target.value); setPromotionId('') }}><option value="">Chọn lịch hẹn chưa có hóa đơn</option>{appointments.map(row => <option key={row.id} value={row.id}>#{row.id} • {row.customer_name} • {row.service_name_snapshot} • {formatPrice(row.booked_price)}</option>)}</select></label>
+          {!appointments.length && <p className="text-sm text-stone-500">Không có lịch hẹn đã xác nhận hoặc hoàn thành đang chờ lập hóa đơn.</p>}
           {selected && <p>Giá dịch vụ khi đặt lịch: <strong>{formatPrice(selected.booked_price)}</strong></p>}
           <label className="block">Khuyến mãi<select className="form-input" value={promotionId} onChange={event => setPromotionId(event.target.value)}><option value="">Không áp dụng</option>{promotions.filter(row => selected && Number(selected.booked_price) >= Number(row.minimum_amount)).map(row => <option key={row.id} value={row.id}>{row.code} • Giảm {formatDiscount(row)}{row.max_discount_amount ? ` • tối đa ${formatPrice(row.max_discount_amount)}` : ''}</option>)}</select></label>
           <p className="text-sm text-stone-500">Khuyến mãi được kiểm tra lại khi tạo hóa đơn. Giảm giá không vượt quá giá dịch vụ.</p>

@@ -125,6 +125,11 @@ async function updateStatus(user, appointmentId, body) {
     const [rows] = await connection.execute(select + ' WHERE a.id=?' + (user.role === 'admin' ? '' : ' AND c.user_id=?') + ' FOR UPDATE', user.role === 'admin' ? [appointmentId] : [appointmentId, user.id]);
     const old = rows[0];
     if (!old) throw error(404, 'Không tìm thấy lịch hẹn.');
+    if (target === 'cancelled') {
+      // Khóa invoice để kiểm tra trạng thái mới nhất, không đua với webhook.
+      const [[invoice]] = await connection.execute('SELECT payment_status FROM invoices WHERE appointment_id=? FOR UPDATE', [appointmentId]);
+      if (invoice?.payment_status === 'paid') throw error(409, 'Lịch hẹn đã thanh toán. Vui lòng liên hệ Spa để được hỗ trợ hủy.');
+    }
     const allowed = { pending: ['confirmed', 'cancelled'], confirmed: ['completed', 'cancelled'], completed: [], cancelled: [] };
     if (!allowed[old.status].includes(target)) throw error(409, 'Không thể chuyển trạng thái lịch hẹn này.');
     if (user.role !== 'admin' && old.start_at <= now()) throw error(409, 'Không thể hủy lịch đã đến giờ bắt đầu.');

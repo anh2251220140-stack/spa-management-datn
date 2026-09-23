@@ -1,3 +1,5 @@
+// Kiểm tra payOS khi khởi động server; test import app.js không phụ thuộc payOS.
+require('./config/payos');
 const app = require('./app');
 const pool = require('./config/db');
 

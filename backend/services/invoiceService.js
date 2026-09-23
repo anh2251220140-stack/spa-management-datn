@@ -41,7 +41,7 @@ async function eligible() {
   const [rows] = await pool.query(`SELECT a.id,a.customer_id,c.full_name AS customer_name,a.service_name_snapshot,a.booked_price,
     DATE_FORMAT(a.start_at,'%Y-%m-%d %H:%i:%s') AS start_at
     FROM appointments a JOIN customers c ON c.id=a.customer_id
-    WHERE a.status='completed' AND NOT EXISTS (SELECT 1 FROM invoices i WHERE i.appointment_id=a.id)
+    WHERE a.status IN ('confirmed','completed') AND NOT EXISTS (SELECT 1 FROM invoices i WHERE i.appointment_id=a.id)
     ORDER BY a.start_at DESC,a.id DESC`);
   return rows;
 }
@@ -57,7 +57,7 @@ async function create(user, body) {
     // Khóa lịch hẹn: hai yêu cầu cùng lúc không tạo được hai hóa đơn.
     const [[appointment]] = await connection.execute('SELECT * FROM appointments WHERE id=? FOR UPDATE', [appointmentId]);
     if (!appointment) throw failure(404, 'Không tìm thấy lịch hẹn.');
-    if (appointment.status !== 'completed') throw failure(409, 'Chỉ tạo hóa đơn cho lịch hẹn đã hoàn thành.');
+    if (!['confirmed', 'completed'].includes(appointment.status)) throw failure(409, 'Chỉ tạo hóa đơn cho lịch hẹn đã xác nhận hoặc hoàn thành.');
     const [[existing]] = await connection.execute('SELECT id FROM invoices WHERE appointment_id=?', [appointmentId]);
     if (existing) throw failure(409, 'Lịch hẹn đã có hóa đơn.');
     let promotion = null;

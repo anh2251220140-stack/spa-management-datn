@@ -9,4 +9,5 @@ router.post('/admin/invoices', auth, admin, controller.create);
 const customer = (req, res, next) => req.user.role === 'user' ? next() : res.status(403).json({ message: 'Trang hóa đơn cá nhân dành cho khách hàng.' });
 router.get('/invoices', auth, customer, controller.list);
 router.get('/invoices/:id', auth, customer, controller.detail);
+router.post('/invoices/:id/payments', auth, customer, require('../controllers/paymentController').create);
 module.exports = router;

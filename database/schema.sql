@@ -326,6 +326,36 @@ CREATE TABLE ai_review_analysis (
     )
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- 15. Một hóa đơn có nhiều lần thử thanh toán; giữ lịch sử khi thất bại/hủy.
+CREATE TABLE payments (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    invoice_id INT UNSIGNED NOT NULL,
+    provider VARCHAR(30) NOT NULL DEFAULT 'payos',
+    provider_transaction_id VARCHAR(255) COLLATE utf8mb4_bin NULL,
+    order_code BIGINT UNSIGNED NOT NULL,
+    amount DECIMAL(12,0) NOT NULL,
+    status ENUM('pending', 'paid', 'failed', 'cancelled') NOT NULL DEFAULT 'pending',
+    payment_method ENUM('bank_transfer') NULL,
+    checkout_url TEXT NULL,
+    qr_code TEXT NULL,
+    paid_at DATETIME NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    KEY idx_payments_invoice (invoice_id),
+    UNIQUE KEY uq_payments_order_code (order_code),
+    UNIQUE KEY uq_payments_provider_transaction (provider, provider_transaction_id),
+    CONSTRAINT fk_payments_invoice FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT chk_payments_provider CHECK (CHAR_LENGTH(TRIM(provider)) > 0),
+    CONSTRAINT chk_payments_transaction CHECK (provider_transaction_id IS NULL OR CHAR_LENGTH(TRIM(provider_transaction_id)) > 0),
+    -- Giới hạn mã trong miền số nguyên an toàn của JavaScript; không dùng invoice_id làm mã.
+    CONSTRAINT chk_payments_order_code CHECK (order_code BETWEEN 1 AND 9007199254740991),
+    CONSTRAINT chk_payments_amount CHECK (amount > 0),
+    CONSTRAINT chk_payments_paid CHECK (
+        (status = 'paid' AND paid_at IS NOT NULL AND payment_method IS NOT NULL)
+        OR (status <> 'paid' AND paid_at IS NULL)
+    )
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Các quy tắc cần triển khai ở bước nghiệp vụ, không được CHECK/FK thay thế:
 -- 1. Chuẩn hóa email/mã khuyến mãi; kiểm tra ngày sinh không ở tương lai.
 -- 2. Đặt/đổi lịch: kiểm tra trạng thái, ca làm, thời lượng và chồng lấn.
@@ -335,3 +365,6 @@ CREATE TABLE ai_review_analysis (
 --    Không sửa hóa đơn paid; kiểm tra hiệu lực và tính giảm giá khi áp dụng.
 -- 5. Tăng content_version khi sửa nhận xét; chỉ nhận kết quả AI đúng phiên bản.
 -- 6. Kiểm tra ID dịch vụ, thứ hạng và điểm phù hợp trong JSON đề xuất.
+
+-- 7. Payment: kiểm tra amount khớp tổng hóa đơn; khóa hóa đơn và xử lý thông báo lặp.
+--    Không ghi nhận paid hai lần; hóa đơn tổng 0 không tạo lần thử chuyển tiền.

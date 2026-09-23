@@ -56,6 +56,29 @@ afterAll(async () => {
   } } finally { await pool.end(); }
 });
 describe('Invoice', () => {
+  test('confirmed appointment is eligible and creates one invoice from booking snapshot', async () => {
+    await pool.execute("UPDATE appointments SET status='confirmed' WHERE id=?", [appointmentId]);
+    expect((await api('get',endpoint+'/eligible-appointments').expect(200)).body.data.map(r=>r.id)).toContain(appointmentId);
+    const saved=(await create().expect(201)).body.data;
+    expect(saved).toMatchObject({subtotal:'200000',total_amount:'200000',service_name_snapshot:'Booking snapshot',payment_status:'unpaid'});
+    expect((await api('get',endpoint+'/eligible-appointments').expect(200)).body.data.map(r=>r.id)).not.toContain(appointmentId);
+    await create().expect(409);
+  });
+  test.each(['user','admin'])('%s cannot cancel a paid confirmed appointment', async role => {
+    await pool.execute("UPDATE appointments SET status='confirmed',start_at='2099-01-01 09:00:00',end_at='2099-01-01 10:00:00' WHERE id=?", [appointmentId]);
+    const saved=(await create().expect(201)).body.data;
+    await pool.execute("UPDATE invoices SET payment_status='paid',payment_method='bank_transfer',paid_at=NOW() WHERE id=?", [saved.id]);
+    const url=role==='admin' ? `/api/admin/appointments/${appointmentId}/status` : `/api/appointments/${appointmentId}/cancel`;
+    const response=await api('patch',url,role).send({status:'cancelled'}).expect(409);
+    expect(response.body.message).toContain('Lịch hẹn đã thanh toán');
+    const [[row]]=await pool.execute('SELECT status FROM appointments WHERE id=?',[appointmentId]);expect(row.status).toBe('confirmed');
+  });
+  test('user can cancel future confirmed appointment with unpaid invoice', async () => {
+    await pool.execute("UPDATE appointments SET status='confirmed',start_at='2099-01-01 09:00:00',end_at='2099-01-01 10:00:00' WHERE id=?", [appointmentId]);
+    await create().expect(201);
+    await api('patch',`/api/appointments/${appointmentId}/cancel`,'user').send({}).expect(200);
+    const [[row]]=await pool.execute('SELECT status FROM appointments WHERE id=?',[appointmentId]);expect(row.status).toBe('cancelled');
+  });
   test('all invoice endpoints require authentication', async () => {
     for (const url of [endpoint,endpoint+'/1',endpoint+'/eligible-appointments','/api/invoices','/api/invoices/1']) await request(app).get(url).expect(401);
     await request(app).post(endpoint).send({appointment_id:appointmentId}).expect(401);
@@ -113,7 +136,7 @@ describe('Invoice', () => {
     await create({promotion_id:promotionId}).expect(201);
   });
   test('missing appointment is rejected', async () => { await create({appointment_id:4294967295}).expect(404); });
-  test.each(['pending','confirmed','cancelled'])('rejects %s appointment',async status=>{
+  test.each(['pending','cancelled'])('rejects %s appointment',async status=>{
     await pool.execute('UPDATE appointments SET status=?,cancelled_at=? WHERE id=?',[status,status === 'cancelled' ? '2019-12-31 09:00:00' : null,appointmentId]);
     await create().expect(409);
   });
@@ -137,8 +160,11 @@ describe('Invoice', () => {
   });
   test('eligible appointments exclude unfinished and already invoiced appointments',async()=>{
     const pending=await appointment(accounts.user.customerId,'pending');
+    const cancelled=await appointment(accounts.user.customerId,'pending');
+    await pool.execute("UPDATE appointments SET status='cancelled',cancelled_at=NOW() WHERE id=?",[cancelled]);
     const before=await api('get',endpoint+'/eligible-appointments').expect(200);
     expect(before.body.data.map(r=>r.id)).toContain(appointmentId);expect(before.body.data.map(r=>r.id)).not.toContain(pending);
+    expect(before.body.data.map(r=>r.id)).not.toContain(cancelled);
     await create().expect(201);
     const after=await api('get',endpoint+'/eligible-appointments').expect(200);expect(after.body.data.map(r=>r.id)).not.toContain(appointmentId);
   });
