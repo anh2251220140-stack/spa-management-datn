@@ -5,6 +5,7 @@ const admin = require('../middleware/adminMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 const router = express.Router();
 router.get('/services', controller.list);
+router.get('/services/:serviceId/reviews', require('../controllers/reviewController').publicByService);
 router.get('/services/:id', controller.detail);
 router.get('/admin/services', auth, admin, controller.listAdmin);
 router.get('/admin/services/:id', auth, admin, controller.detailAdmin);

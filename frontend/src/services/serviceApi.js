@@ -4,3 +4,5 @@ export const getService = (id, signal) => api.get('/services/' + id, { signal, s
 export const getAdminServices = () => api.get('/admin/services')
 export const createService = (data) => api.post('/admin/services', data)
 export const updateService = (id, data) => api.patch('/admin/services/' + id, data)
+
+export const getServiceReviews = (id, signal) => api.get(`/services/${id}/reviews`, { signal, skipAuth: true })

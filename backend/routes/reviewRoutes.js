@@ -1,0 +1,15 @@
+const router = require('express').Router();
+const auth = require('../middleware/authMiddleware');
+const admin = require('../middleware/adminMiddleware');
+const controller = require('../controllers/reviewController');
+const user = (req, res, next) => req.user.role === 'user' ? next() : res.status(403).json({ message: 'Chức năng đánh giá dành cho khách hàng.' });
+router.post('/reviews', auth, user, controller.create);
+router.get('/reviews/:appointmentId', auth, user, controller.own);
+router.patch('/reviews/:id', auth, user, controller.update);
+router.get('/admin/reviews', auth, admin, controller.list);
+router.get('/admin/reviews/:id', auth, admin, controller.detail);
+router.get('/reviews/:reviewId/replies', auth, user, controller.listReplies);
+router.post('/reviews/:reviewId/replies', auth, user, controller.createReply);
+router.get('/admin/reviews/:reviewId/replies', auth, admin, controller.listReplies);
+router.post('/admin/reviews/:reviewId/replies', auth, admin, controller.createReply);
+module.exports = router;

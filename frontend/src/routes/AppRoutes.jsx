@@ -1,5 +1,6 @@
 import ServiceListPage from '../pages/public/ServiceListPage'
 import InvoicePage from '../components/InvoicePage'
+import ReviewManagementPage from '../pages/admin/ReviewManagementPage'
 import PaymentReturnPage from '../pages/user/PaymentReturnPage'
 import PromotionManagementPage from '../pages/admin/PromotionManagementPage'
 import PromotionListPage from '../pages/public/PromotionListPage'
@@ -24,6 +25,7 @@ import HomePage from '../pages/public/HomePage'
 export default function AppRoutes() {
   return <Routes><Route element={<MainLayout />}>
     <Route index element={<HomePage />} />
+    <Route element={<ProtectedRoute role="admin" />}><Route path="admin/reviews" element={<ReviewManagementPage />} /></Route>
     <Route path="payment/success" element={<PaymentReturnPage />} />
     <Route path="payment/cancel" element={<PaymentReturnPage cancelled />} />
     <Route element={<ProtectedRoute role="admin" />}><Route path="admin/invoices" element={<InvoicePage admin />} /><Route path="admin/invoices/:id" element={<InvoicePage admin />} /></Route>
