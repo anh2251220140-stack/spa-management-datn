@@ -46,6 +46,7 @@ export default function PaymentPanel({ invoice, onPaid }) {
       {payment.qr_code ? <QRCodeSVG value={payment.qr_code} size={240} marginSize={4} title="Mã QR thanh toán hóa đơn" /> : <p>Mở trang thanh toán để xem mã QR.</p>}
       <div className="flex flex-wrap gap-3"><a className="primary-button" href={payment.checkout_url} target="_blank" rel="noopener noreferrer">Mở trang thanh toán</a><button className="secondary-button" onClick={() => setPayment(null)}>Đóng</button></div>
       <p className="text-sm text-stone-500">Đóng giao diện không hủy liên kết. Hóa đơn chỉ được xác nhận sau khi hệ thống nhận được xác nhận giao dịch.</p>
+      <p className="text-sm text-stone-500">Sau khi chuyển khoản, hệ thống sẽ tự động cập nhật trạng thái thanh toán khi nhận được xác nhận từ payOS.</p>
     </>}
   </section>
 }
