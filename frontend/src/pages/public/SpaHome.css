@@ -1,0 +1,170 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Noto+Serif:ital,wght@0,500;0,600;1,500&display=swap&subset=vietnamese');
+
+/* Hệ màu và typography chỉ dành cho Home, không kế thừa sang ChatWidget. */
+.spa-home,.home-layout > header,.home-layout > footer {
+ --bg-main:#3A2419; --card-bg:#4A3022;
+ --text-main:#FFF6ED; --text-muted:#D7C2B3;
+ --accent:#B89273; --accent-hover:#C9A587;
+ --image-overlay:rgba(46,28,20,.38); --image-overlay-strong:rgba(46,28,20,.48);
+ --text-on-image:#FFF6ED; --border:rgba(255,246,237,.18);
+ font-family:'Be Vietnam Pro',Arial,sans-serif; color:var(--text-main); font-size:15px; line-height:1.7;
+ background:var(--bg-main);
+}
+.spa-home h1,.spa-home h2,.spa-home h3,.home-layout .home-brand { font-family:'Noto Serif',Georgia,serif; font-weight:500; overflow-wrap:break-word; }
+.home-section { max-width:1360px; margin:auto; padding:100px 40px; }
+.home-eyebrow { font-size:11px; line-height:1.8; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); }
+.home-title { font-size:clamp(36px,4.3vw,66px); line-height:1.2; letter-spacing:-.025em; padding-block:.1em; }
+.spa-home em { font-weight:500; }
+.home-button { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:48px; padding:11px 26px; border:1px solid var(--accent); border-radius:999px; background:var(--accent); color:var(--bg-main); font-size:13px; font-weight:500; line-height:24px; letter-spacing:.025em; transition:background 200ms,color 200ms,transform 200ms; }
+.home-button:hover { background:var(--accent-hover); transform:translateY(-1px); }
+.home-button-secondary { background:transparent; color:var(--accent); border-color:var(--accent); }
+.home-button-secondary:hover { background:var(--accent-hover); color:var(--bg-main); }
+.spa-home a:focus-visible { outline:2px solid currentColor; outline-offset:5px; }
+.home-actions { display:flex; flex-wrap:wrap; justify-content:center; gap:14px; margin-top:32px; }
+.home-hero { margin:0; border-radius:0; color:var(--text-on-image); }
+.home-hero > img { object-position:center; }
+.home-hero > .home-image-shade { background:var(--image-overlay); }
+.home-hero > .home-section { min-height:70svh; justify-content:center; text-align:center; padding-block:112px; }
+.home-hero .home-hero-copy { max-width:1160px; margin:auto; }
+.home-hero h1 { font-size:clamp(52px,4.8vw,88px); line-height:1.2; letter-spacing:-.035em; padding-block:.08em; text-shadow:0 2px 18px #21190f66; }
+.home-hero .home-eyebrow,.home-intro .home-eyebrow { color:var(--text-on-image); }
+.home-hero .home-hero-copy > p:last-child { margin-inline:auto; max-width:540px; }
+.home-intro { position:relative; isolation:isolate; margin-top:0; color:var(--text-on-image); }
+.home-intro > img,.home-intro-shade { position:absolute; inset:0; width:100%; height:100%; z-index:-1; }
+.home-intro > img { object-fit:cover; object-position:center; }
+.home-intro-shade { background:linear-gradient(var(--image-overlay),var(--image-overlay)); }
+ .home-intro-copy { min-height:540px; padding-block:64px; display:flex; align-items:center; justify-content:flex-end; text-align:left; }
+.home-intro-text { width:46%; max-width:540px; }
+.home-intro-copy .home-title { margin:24px 0; font-size:clamp(36px,3.3vw,52px); }
+.home-intro-text > p:not(.home-eyebrow) { max-width:440px; font-size:14px; line-height:1.9; }
+.home-intro .home-actions { justify-content:flex-start; }
+.home-intro .home-button-secondary { border-color:var(--text-on-image); color:var(--text-on-image); }
+.home-intro .home-button-secondary:hover { background:var(--accent-hover); color:var(--bg-main); }
+.home-intro h2,.home-intro p,.home-closing h2,.home-closing p { text-shadow:0 2px 16px #21190f66; }
+.home-about { background:var(--bg-main); }
+.home-about .home-about-editorial { max-width:900px; text-align:center; padding-top:80px; padding-bottom:32px; }
+.home-about .home-title { margin-top:14px; }
+.home-about-body { max-width:760px; margin:24px auto 0; font-size:14px; line-height:2; color:var(--text-muted); }
+.home-about-body p + p { margin-top:18px; }
+.home-about-quote { font-family:'Noto Serif',Georgia,serif; font-style:italic; font-size:clamp(18px,1.7vw,24px); margin-top:28px; color:var(--text-main); }
+.home-services { background:var(--bg-main); padding-top:60px; padding-bottom:72px; }
+.home-services-heading { text-align:center; margin-bottom:32px; }
+.home-services-heading .home-title,.home-promotions > .home-title { font-size:clamp(32px,3.5vw,48px); line-height:1.1; margin-inline:auto; }
+.home-services-heading .home-services-all { margin-top:20px; }
+.home-services .home-service-grid { gap:24px; padding-top:0; grid-auto-rows:1fr; }
+.home-service-image { position:relative; display:flex; align-items:flex-end; isolation:isolate; min-height:440px; height:100%; overflow:hidden; border-radius:28px; color:var(--text-on-image); background:var(--bg-main); }
+.home-service-photo { position:absolute; inset:0; z-index:-2; }
+.home-service-photo img { object-fit:cover; object-position:center; }
+.home-service-image::after { content:''; position:absolute; inset:0; z-index:-1; background:linear-gradient(to top,var(--image-overlay-strong),var(--image-overlay) 65%,transparent); }
+.home-service-copy { width:100%; min-width:0; padding:30px 24px; text-shadow:0 1px 8px #2d1e1666; }
+.home-service-copy .home-eyebrow { color:var(--text-on-image); font-size:10px; letter-spacing:.15em; }
+.spa-home .home-service-copy h3 { font-size:clamp(22px,1.8vw,28px); line-height:1.4; margin:12px 0; }
+.home-service-meta { font-size:12px; line-height:1.8; }
+.home-service-link { display:inline-flex; align-items:center; min-height:36px; padding:7px 13px; border:1px solid rgba(255,248,241,.75); border-radius:999px; background:rgba(50,33,25,.15); color:var(--text-on-image); font-size:12px; line-height:20px; margin-top:22px; transition:background 200ms,color 200ms; }
+.home-service-image:hover .home-service-link,.home-service-image:focus-visible .home-service-link { background:var(--text-on-image); color:var(--bg-main); text-shadow:none; }
+.home-services-all { background:transparent; border-color:var(--accent); color:var(--accent); padding:10px 18px; font-size:13px; }
+.home-services-all:hover { background:var(--accent-hover); color:var(--bg-main); }
+.home-service-image:focus-visible { outline-color:var(--accent); }
+.spa-home article h3 { line-height:1.35; padding-block:.06em; font-size:26px; }
+.spa-home .text-\[\#786859\] { color:var(--text-muted); }
+.home-features { background:linear-gradient(var(--image-overlay-strong),var(--image-overlay-strong)),url('/images/home-ritual-wide.jpg') center/cover; border:0; }
+.home-features .home-title { color:var(--text-on-image); max-width:900px; margin-inline:auto; text-shadow:0 2px 15px #21190f80; }
+.home-features .home-eyebrow { color:var(--text-on-image); }
+.home-features article { background:rgba(255,255,255,.13); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.34); border-radius:26px; box-shadow:0 8px 30px rgba(0,0,0,.08); padding:24px 20px; color:var(--text-on-image); }
+.home-features article h3 { font-size:19px; color:#FFF8F1; }
+.home-features article p { color:rgba(255,255,255,.82); font-size:12px; line-height:1.8; }
+.home-features article svg { color:#FFF8F1; margin-bottom:16px; }
+.home-features .grid { gap:22px; }
+.home-promotion-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; grid-auto-rows:1fr; }
+.home-promotion { min-width:0; padding:28px; border:1px solid rgba(255,255,255,.45); border-radius:26px; background:#FFF8F1; box-shadow:0 10px 30px rgba(0,0,0,.10); display:flex; flex-direction:column; }
+.spa-home .home-promotion h3 { font-size:26px; color:#4A3126; }
+.spa-home .home-promotion > p { color:#6B4C3D; }
+.spa-home .home-promotion > .home-eyebrow { color:#8A5F46; }
+.spa-home .home-promotion > p.text-xl { font-family:'Noto Serif',Georgia,serif; font-size:30px; line-height:1.4; color:#9A6A4C; margin:12px 0; }
+.home-promotion .home-promotion-link { align-self:flex-start; margin-top:auto; background:transparent; color:#6F4A38; border:1px solid #6F4A38; border-radius:999px; padding:8px 16px; min-height:40px; font-size:12px; }
+.home-promotion .home-promotion-link:hover { background:#6F4A38; color:#FFF8F1; }
+.home-promotion > p:last-of-type { margin-bottom:20px; }
+@media(min-width:768px) and (max-width:1023px) { .home-promotion-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+.home-closing { color:var(--text-on-image); background:linear-gradient(var(--image-overlay-strong),var(--image-overlay-strong)),url('/images/home-hair-spa.jpg') center 32%/cover; }
+.home-closing .home-section { min-height:640px; padding-block:96px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.home-closing .home-title { max-width:1000px; font-size:clamp(38px,4.8vw,72px); }
+.home-closing .home-section > svg { color:var(--text-on-image); }
+/* Giữ màu Header hiện tại; Footer dùng nền chính của Home. */
+.home-layout > header {
+ --bg-main:#1F1713; --text-main:#FFF8F1; --text-muted:#D8C8BC;
+ --border:rgba(255,248,241,.18); --accent:#FFF8F1;
+ background:var(--bg-main); color:var(--text-main);
+}
+.home-layout > header { border-bottom:1px solid var(--border); }
+.home-layout > header > div { max-width:1440px; min-height:80px; padding:14px 32px; gap:20px; }
+.home-layout > header nav,.home-layout > header a { color:var(--text-main); }
+.home-layout > header > div > a:first-child { font-family:'Noto Serif',Georgia,serif; font-weight:500; font-size:27px; letter-spacing:-.025em; }
+.home-layout > header nav { gap:24px; font-size:14px; font-weight:400; }
+.home-layout > header .home-booking { background:transparent; border:1px solid var(--accent); border-radius:999px; padding:11px 26px; min-height:48px; display:inline-flex; align-items:center; transition:background 200ms; }
+.home-layout > header .home-booking:hover { background:#FFF8F1; color:#1F1713; }
+.home-layout > header button { border-radius:999px; font-size:14px; color:var(--text-main); background:transparent; outline:1px solid #FFF8F1; outline-offset:-1px; }
+.home-layout > footer { --bg-main:#17110E; --text-main:#FFF8F1; --text-muted:#D8C8BC; --border:rgba(255,248,241,.12); background:var(--bg-main); padding-top:60px; padding-bottom:64px; }
+.home-layout > footer > div { max-width:1280px; }
+@media(min-width:1024px) and (max-width:1399px) {
+ .home-layout > header > div { padding-inline:24px; gap:14px; }
+ .home-layout > header nav { gap:16px; }
+ .home-layout > header > div > a:first-child { font-size:24px; }
+}
+@media(max-width:767px) {
+ .home-section { padding:60px 22px; }
+ .home-title { font-size:36px; line-height:1.25; }
+ .home-hero > .home-section { min-height:550px; padding:64px 24px; }
+ .home-hero h1 { font-size:clamp(36px,7.8vw,52px); line-height:1.25; letter-spacing:-.025em; }
+ .home-hero > img { object-position:55% center; }
+ .home-intro-copy { min-height:520px; padding:48px 24px; }
+ .home-intro-copy .home-title { font-size:36px; }
+ .home-about-body { margin-top:24px; }
+ .home-about-quote { margin-top:24px; }
+ .home-intro-text { width:100%; max-width:440px; }
+ .home-intro-shade { background:linear-gradient(var(--image-overlay),var(--image-overlay)); }
+ .home-promotion-grid { grid-template-columns:1fr; }
+ .home-about .home-title { font-size:36px; }
+ .home-services .grid { gap:24px; }
+ .home-service-image { min-height:460px; }
+ .home-closing .home-section { min-height:550px; padding:72px 24px; }
+ .home-layout > header > div { padding:18px 20px; gap:16px; }
+ .home-layout > header nav { order:3; width:100%; gap:12px 20px; font-size:14px; }
+ .home-layout > header > div > a:first-child { font-size:23px; }
+ .home-promotion { padding:28px 24px; }
+ .home-features article { padding:22px; }
+}
+@media(prefers-reduced-motion:reduce) { .spa-home * { transition:none!important; } }
+
+/* Không phóng ảnh nền theo chiều cao của bốn card xếp dọc trên mobile. */
+@media(max-width:767px) {
+ .home-features { background-color:var(--bg-main); background-size:auto 560px; background-position:center top; background-repeat:no-repeat; }
+ .home-intro > img { object-position:35% center; }
+ .home-closing { background-position:48% center; }
+}
+
+
+
+/* Đồng bộ màu chữ và nền, chỉ áp dụng cho Home. */
+.spa-home { color:var(--text-muted); }
+.spa-home h1,.spa-home h2,.spa-home h3 { color:var(--text-main); }
+.home-promotions { background:var(--bg-main); padding-block:72px; }
+.home-promotions > .home-eyebrow,.home-promotions > .home-title { text-align:center; }
+.home-layout > footer p { color:var(--text-muted); }
+.home-layout > header .home-booking { color:var(--accent); }
+.home-layout > header button:hover { background:#FFF8F1; color:#1F1713; }
+.home-service-photo > div { background:var(--card-bg); color:var(--text-muted); }
+.home-hero h1,.home-hero p,.home-intro h2,.home-intro p,
+.home-service-copy h3,.home-service-copy p,.home-features h2,
+.home-closing h2,.home-closing p { color:var(--text-on-image); }
+
+/* Thu gọn khoảng cách bên trong các ưu đãi. */
+.home-promotions > .home-title { margin-bottom:28px; }
+.home-promotion h3 { margin-top:12px; }
+.home-promotion > p.text-xl { margin-block:12px; }
+.home-promotion > p.mt-4 { margin-top:10px; }
+.home-promotion > p.mt-3 { margin-top:8px; }
+
+
+.home-layout > footer a { color:var(--text-main); transition:color 200ms; }
+.home-layout > footer a:hover { color:#C7A58A; }
+.home-layout > header a:focus-visible,.home-layout > header button:focus-visible,.home-layout > footer a:focus-visible { outline:2px solid #FFF8F1; outline-offset:4px; }
